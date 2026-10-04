@@ -11,7 +11,7 @@ export const store = configureStore({
     enrollments: enrollmentReducer,
     ui: uiReducer,
   },
-  devTools: process.env.NODE_ENV !== 'production',
+  devTools: import.meta.env.DEV,
 });
 
 export default store;
