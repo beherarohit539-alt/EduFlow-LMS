@@ -4,6 +4,11 @@ const path = require("path");
 const { CONFIG } = require("../config");
 
 const sendMail = async (options) => {
+  if (!CONFIG.SMTP_PASSWORD || CONFIG.SMTP_PASSWORD.includes("password")) {
+    console.log("Email dispatch skipped (demo / simulation mode)");
+    return;
+  }
+
   const transporter = nodemailer.createTransport({
     host: CONFIG.SMTP_HOST,
     port: parseInt(CONFIG.SMTP_PORT || "587"),
@@ -12,6 +17,9 @@ const sendMail = async (options) => {
       user: CONFIG.SMTP_MAIL,
       pass: CONFIG.SMTP_PASSWORD,
     },
+    connectionTimeout: 3000,
+    greetingTimeout: 3000,
+    socketTimeout: 3000,
   });
 
   const { email, subject, template, data } = options;
