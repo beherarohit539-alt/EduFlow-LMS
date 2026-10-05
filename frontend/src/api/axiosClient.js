@@ -1,8 +1,16 @@
 import axios from 'axios';
 
+// Auto-detect production vs localhost backend
+const defaultBaseURL =
+  typeof window !== 'undefined' &&
+  window.location.hostname !== 'localhost' &&
+  window.location.hostname !== '127.0.0.1'
+    ? 'https://eduflow-lms-backend-lqf6.onrender.com/api/v1'
+    : 'http://localhost:8000/api/v1';
+
 // Base Axios instance connected to Node.js / Express backend
 const axiosClient = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api/v1',
+  baseURL: import.meta.env.VITE_API_BASE_URL || defaultBaseURL,
   headers: {
     'Content-Type': 'application/json',
   },

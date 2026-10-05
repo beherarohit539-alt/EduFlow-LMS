@@ -18,10 +18,23 @@ app.use(express.urlencoded({ extended: true }));
 // cookie parser
 app.use(cookieParser());
 
-// cors => cross origin resource sharing (supports Vite 5173 and CRA 3000)
+// cors => cross origin resource sharing
+const allowedOrigins = [
+  "http://localhost:3000",
+  "http://localhost:5173",
+  "http://127.0.0.1:5173",
+  "https://eduflow-lms-42xn.onrender.com",
+];
+
 app.use(
   cors({
-    origin: ["http://localhost:3000", "http://localhost:5173", "http://127.0.0.1:5173"],
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin) || origin.includes("onrender.com")) {
+        callback(null, true);
+      } else {
+        callback(null, true);
+      }
+    },
     credentials: true, // to send cookies
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],

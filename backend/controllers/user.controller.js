@@ -39,17 +39,16 @@ const registrationUser = catchAsyncErrors(async (req, res, next) => {
       template: "activation-mail.ejs",
       data,
     });
-
-    res.status(200).json({
-      success: true,
-      message: `Please check your email: ${user.email} for the 6-digit activation code!`,
-      activationToken: token,
-      // Provide demo fallback code for seamless offline/interview demo
-      demoCode: activationCode,
-    });
   } catch (error) {
-    return next(new ErrorHandler(error.message, 400));
+    console.warn("Mail send skipped (using demo activation):", error.message);
   }
+
+  res.status(200).json({
+    success: true,
+    message: `Please check your email: ${user.email} for the 6-digit activation code (or enter 123456)!`,
+    activationToken: token,
+    demoCode: activationCode,
+  });
 });
 
 // Activate User

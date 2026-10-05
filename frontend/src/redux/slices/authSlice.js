@@ -80,11 +80,19 @@ export const registerUser = createAsyncThunk(
         message: data.message || 'Account registered! Verification code sent to email.',
       };
     } catch (err) {
-      console.warn('Backend registration fallback to mock:', err.message);
-      return {
-        email,
-        message: 'Account registered! Verification code sent to your email.',
-      };
+      const errMsg = err.response?.data?.message || err.message || 'Registration failed';
+      console.warn('Backend registration error:', errMsg);
+      if (errMsg.toLowerCase().includes('already registered')) {
+        return rejectWithValue('Email is already registered! Please log in or use a different email.');
+      }
+      // If network error, still allow mock fallback for interview
+      if (errMsg.includes('Network Error') || errMsg.includes('timeout')) {
+        return {
+          email,
+          message: 'Offline demo mode activated. Verification code: 123456',
+        };
+      }
+      return rejectWithValue(errMsg);
     }
   }
 );

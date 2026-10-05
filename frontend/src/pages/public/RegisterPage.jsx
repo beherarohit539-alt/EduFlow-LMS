@@ -48,10 +48,17 @@ const RegisterPage = () => {
       dispatch(
         addToast({
           type: 'success',
-          message: 'Registration initiated! Please enter the OTP sent to your email.',
+          message: 'Registration initiated! Please enter the OTP code.',
         })
       );
       navigate(`/verify-email?email=${encodeURIComponent(formData.email)}&role=${role}&name=${encodeURIComponent(formData.name)}`);
+    } else if (resultAction.payload) {
+      dispatch(
+        addToast({
+          type: 'error',
+          message: resultAction.payload,
+        })
+      );
     }
   };
 
