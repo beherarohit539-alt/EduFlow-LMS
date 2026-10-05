@@ -1,9 +1,17 @@
 require("dotenv").config();
 
+const CLOUD_DB_URL =
+  "mongodb+srv://beherarohit752:Rohit12345@cluster0.0y5anh6.mongodb.net/lms_database?retryWrites=true&w=majority&appName=Cluster0";
+
 const CONFIG = {
   PORT: process.env.PORT || 8000,
   ORIGIN: process.env.ORIGIN || ["http://localhost:3000", "http://localhost:5173"],
-  DB_URL: process.env.DB_URL || "mongodb://127.0.0.1:27017/lms_database",
+  DB_URL:
+    process.env.DB_URL &&
+    !process.env.DB_URL.includes("127.0.0.1") &&
+    !process.env.DB_URL.includes("localhost")
+      ? process.env.DB_URL
+      : CLOUD_DB_URL,
   CLOUD_NAME: process.env.CLOUD_NAME || "demo_cloud",
   CLOUDINARY_API: process.env.CLOUDINARY_API || "123456789",
   CLOUDINARY_SECRET: process.env.CLOUDINARY_SECRET || "sample_secret",
