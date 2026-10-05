@@ -7,7 +7,7 @@ const connectDb = async () => {
     console.log(`Database connected with ${data.connection.host}`);
   } catch (error) {
     console.log(`Database connection failed: ${error.message}`);
-    // Don't exit process in development so server continues running
+    setTimeout(connectDb, 5000);
   }
 };
 

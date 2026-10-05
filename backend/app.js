@@ -57,6 +57,37 @@ app.get("/test", (req, res, next) => {
   });
 });
 
+// database diagnostic route
+const mongoose = require("mongoose");
+app.get("/db-status", async (req, res) => {
+  const readyStateMap = {
+    0: "disconnected",
+    1: "connected",
+    2: "connecting",
+    3: "disconnecting",
+  };
+  const maskedUrl = CONFIG.DB_URL
+    ? CONFIG.DB_URL.replace(/:([^:@]+)@/, ":****@")
+    : "NOT_SET";
+
+  let connectError = null;
+  if (mongoose.connection.readyState !== 1) {
+    try {
+      await mongoose.connect(CONFIG.DB_URL, { serverSelectionTimeoutMS: 5000 });
+    } catch (err) {
+      connectError = err.message;
+    }
+  }
+
+  res.status(200).json({
+    success: mongoose.connection.readyState === 1,
+    readyState: mongoose.connection.readyState,
+    status: readyStateMap[mongoose.connection.readyState],
+    configuredUrl: maskedUrl,
+    error: connectError,
+  });
+});
+
 app.all("*", (req, res, next) => {
   const err = new Error(`Route ${req.originalUrl} not found`);
   err.statusCode = 404;
